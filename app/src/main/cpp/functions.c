@@ -1,3 +1,4 @@
+
 //
 // Created by sarap on 8/5/2024.
 //
@@ -20,7 +21,7 @@
 #include <malloc.h>
 #include <sys/resource.h>
 #include <android/log.h>
-
+#include "ResourceUsage.cpp"
 
 #define MAX_LINE_LENGTH 100
 #define BUF_SIZE 1024
@@ -29,10 +30,13 @@
 #define PATH_MAX 4096  // Maximum path length
 #define LOG_TAG "NativeCode"
 
+
+#if 0
 typedef struct {
     double cpu_usage;
     long memory_usage;
 } ResourceUsage;
+#endif
 
 // Flag za kontrolu intenzivnog opterećenja
 int stop_flag = 0;
@@ -48,7 +52,7 @@ void print_process_info(pid_t pid);
 int ispisiInfoOProcesu();
 double get_cpu_usage(int pid);
 extern int malloc_trim(size_t pad);
-ResourceUsage  test(const char* process_name);
+ResourceUsage*  test(const char* process_name);
 long get_memory_usage_for_pid(pid_t pid) ;
 double get_cpu_usage_for_pid(pid_t pid) ;
 void simulate_memory_allocation_cpp(double load_factor) ;
@@ -59,7 +63,6 @@ void simulate_cpu_load_rand(double load_factor);
 double get_cpu_usage_for_pid_2(pid_t pid, unsigned long* prev_utime, unsigned long* prev_stime, double* prev_time);
 void simulate_decreasing_cpu_load(double load_factor) ;
 pid_t get_pid_by_name(const char* process_name);
-
 
 
 
@@ -407,38 +410,32 @@ double get_cpu_usage(int pid) {
 
 
 // Funkcija za prikupljanje i vraćanje podataka o zauzetosti CPU-a i memorije
-ResourceUsage get_resource_usage(pid_t pid) {
-    ResourceUsage usage;
-
-    // Prikupljanje podataka o CPU zauzetosti
-    usage.cpu_usage = get_cpu_usage_for_pid(pid);
-
-    // Prikupljanje podataka o zauzetosti memorije
-    usage.memory_usage = get_memory_usage_for_pid(pid);
-
-    return usage;
+ResourceUsage* get_resource_usage(pid_t pid) {
+    double cpu_usage = get_cpu_usage_for_pid(pid);
+    long memory_usage = get_memory_usage_for_pid(pid);
+    return new ResourceUsage(cpu_usage, memory_usage);
 }
 
 
+ResourceUsage* usage= nullptr;
 
-
-
-ResourceUsage  test(const char* process_name) {
+ResourceUsage* test(const char* process_name) {
     pthread_t th1, th2;
 
-    pid_t pid = get_pid_by_name(process_name);
-    if (pid == -1) {
+    pid_t pid =getpid();
+            //get_pid_by_name(process_name);
+    /*if (pid == -1) {
         fprintf(stderr, "Error finding process with name %s\n", process_name);
-        return {0.0,0};
-    }
+        return nullptr;
+    }*/
 
-    printf("Process: PID = %d\n", pid);
+    //printf("Process: PID = %d\n", pid);
 
-    ResourceUsage usage = get_resource_usage(pid);
+    usage = get_resource_usage(pid);
 
     printf("Initial Resource Usage:\n");
-    printf("CPU usage: %.2f%%\n", usage.cpu_usage);
-    printf("Memory usage (RSS): %ld KB\n", usage.memory_usage);
+    printf("CPU usage: %.2f%%\n", usage->getCpuUsage());
+    printf("Memory usage (RSS): %ld KB\n", usage->getMemoryUsage());
 
     int value = pid % 10;
 
@@ -455,13 +452,18 @@ ResourceUsage  test(const char* process_name) {
     }
 
     // Ponovo prikupi podatke nakon rada sa nitima
+    //delete usage;
     usage = get_resource_usage(pid);
 
     printf("Final Resource Usage:\n");
-    printf("CPU usage: %.2f%%\n", usage.cpu_usage);
-    printf("Memory usage (RSS): %ld KB\n", usage.memory_usage);
-    return usage; // Vraćamo strukturu ResourceUsage
+    printf("CPU usage: %.2f%%\n", usage->getCpuUsage());
+    printf("Memory usage (RSS): %ld KB\n", usage->getMemoryUsage());
+
+    //delete usage; // Oslobađanje memorije
+    return usage;
 }
+
+
 
 
 // Funkcija za pronalaženje PID-a procesa sa zadatim imenom
@@ -487,11 +489,14 @@ pid_t get_pid_by_name(const char* name) {
 }
 
 
-// Funkcija za merenje proteklog vremena
-double measure_time_elapsed(struct timespec* start) {
-    struct timespec end;
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    return (end.tv_sec - start->tv_sec) + (end.tv_nsec - start->tv_nsec) / 1e9;
+double measure_time_elapsed(const struct timespec *last_check_time) {
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    double elapsed = (now.tv_sec - last_check_time->tv_sec) +
+                     (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
+
+    return elapsed;
 }
 
 // Simulira opterećenje CPU-a na osnovu `load_factor`
@@ -592,7 +597,6 @@ void simulate_memory_allocation_c(double load_factor) {
     free(memory_chunks);*/
 }
 
-// Funkcija za merenje zauzetosti CPU-a za dati PID
 double get_cpu_usage_for_pid(pid_t pid) {
     static unsigned long prev_utime = 0;
     static unsigned long prev_stime = 0;
@@ -609,7 +613,7 @@ double get_cpu_usage_for_pid(pid_t pid) {
     }
 
     char stat_path[MAX_BUF_SIZE];
-    sprintf(stat_path, "/proc/%d/stat", pid);
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
 
     FILE *fp = fopen(stat_path, "r");
     if (!fp) {
@@ -634,6 +638,10 @@ double get_cpu_usage_for_pid(pid_t pid) {
 
     // Dobijanje clock ticks po sekundi
     long clk_tck = sysconf(_SC_CLK_TCK);
+    if (clk_tck <= 0) {
+        perror("Error getting clock ticks per second");
+        return -1.0;
+    }
 
     // Izračunavanje CPU opterećenja
     double cpu_usage_percentage = ((double)diff_total_time / (clk_tck * elapsed)) * 100.0;
@@ -644,7 +652,6 @@ double get_cpu_usage_for_pid(pid_t pid) {
 
     return cpu_usage_percentage;
 }
-
 
 
 
@@ -902,5 +909,3 @@ void *worker2(void *data) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-

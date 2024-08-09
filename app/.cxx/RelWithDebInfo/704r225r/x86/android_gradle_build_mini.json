@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "C:\\Users\\sarap\\AndroidStudioProjects\\prekopiranceokod\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\sarap\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\sarap\\AndroidStudioProjects\\prekopiranceokod\\app\\.cxx\\RelWithDebInfo\\704r225r\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\sarap\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\sarap\\AndroidStudioProjects\\prekopiranceokod\\app\\.cxx\\RelWithDebInfo\\704r225r\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "prekopiranceokod::@6890427a1f51a3e7e1df": {
+      "artifactName": "prekopiranceokod",
+      "abi": "x86",
+      "output": "C:\\Users\\sarap\\AndroidStudioProjects\\prekopiranceokod\\app\\build\\intermediates\\cxx\\RelWithDebInfo\\704r225r\\obj\\x86\\libprekopiranceokod.so",
+      "runtimeFiles": []
+    }
+  }
+}

@@ -15,7 +15,7 @@
 #include "functions.c"
 
 using namespace std;
-extern "C" ResourceUsage  Sara();
+extern "C" ResourceUsage*  Sara();
 //ResourceUsage test(const char* process_name); // Prototip funkcije
 
 
@@ -33,7 +33,7 @@ int FunkcijaUC(int (*func_ptr)()) ;
 
 //int Sara(int argc, char* argv[])
 
-ResourceUsage  Sara()
+ResourceUsage*  Sara()
 {
     /* if (argc < 2) {
          fprintf(stderr, "Usage: %s <process_name>\n", argv[0]);
@@ -41,7 +41,7 @@ ResourceUsage  Sara()
      }
 
      const char* process_name = argv[1];*/
-     const char* process_name="helloworld";
+    const char* process_name="helloworld";
     /*FunkcijaUC(&FunkcijaUCppKojaSePozivaIzC);
     printf("\n");
     init();
@@ -59,11 +59,11 @@ ResourceUsage  Sara()
     */
 
 
-    prikaziZauzetostCpu();
+    //prikaziZauzetostCpu();
     // sleep(20);
     printf("\nNakon ovoga test\n");
     printf("\n\n\n");
-    ResourceUsage usage=test(process_name);
+    ResourceUsage* usage=test(process_name);
     //sleep(10);
     printf("\nKraj maina, nakon ovog while(2) \n");
 

@@ -1,0 +1,3 @@
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/Debug/654h4j29/armeabi-v7a/CMakeFiles/prekopiranceokod.dir
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/Debug/654h4j29/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/Debug/654h4j29/armeabi-v7a/CMakeFiles/rebuild_cache.dir

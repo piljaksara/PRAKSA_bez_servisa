@@ -1,0 +1,3 @@
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/RelWithDebInfo/704r225r/x86/CMakeFiles/prekopiranceokod.dir
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/RelWithDebInfo/704r225r/x86/CMakeFiles/edit_cache.dir
+C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/.cxx/RelWithDebInfo/704r225r/x86/CMakeFiles/rebuild_cache.dir

@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#6200EE</color> <!-- Prilagodite ovu boju po potrebi -->
+    <color name="colorPrimaryDark">#3700B3</color> <!-- Prilagodite ovu boju po potrebi -->
+    <color name="colorAccent">#03DAC5</color> <!-- Prilagodite ovu boju po potrebi -->
+    <color name="snackbar_background">#FFFFFF</color> <!-- Bela boja za Snackbar -->
+    <color name="snackbar_text">#6200EE</color> <!-- Ljubičasta boja za tekst Snackbar-a -->
+    <color name="actionTextColor">#03FFFF</color>
 </resources>
