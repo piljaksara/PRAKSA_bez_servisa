@@ -22,6 +22,8 @@
 #include <sys/resource.h>
 #include <android/log.h>
 #include "ResourceUsage.cpp"
+#include <jni.h>
+
 
 #define MAX_LINE_LENGTH 100
 #define BUF_SIZE 1024
@@ -66,348 +68,9 @@ pid_t get_pid_by_name(const char* process_name);
 
 
 
-int FunkcijaUC(int(*PFunkcijaUCppKojaSePozivaIzC)()){
-    func_ptr = PFunkcijaUCppKojaSePozivaIzC;
-    return 0;
-}
 
-int init(){
-    pthread_t th1, th2,th3,th4,th5;
-    pthread_create(&th1, NULL, worker, NULL);
-    sleep(7);
 
-    pthread_create(&th2, NULL, worker, NULL);
-    sleep(5);
-
-    pthread_create(&th3, NULL, worker, NULL);
-    sleep(2);
-
-    pthread_create(&th4, NULL, worker, NULL);
-    sleep(1);
-
-    printf("\nSve niti kreirane\n");
-    return 0;
-}
-
-void *worker(void *data)
-{
-    uint avaib0;
-    uint avaib1;
-    uint avaib2;
-
-    for (int i = 0; i < 1; i++)
-    {
-        int N = 10;
-        int value = rand() % (N + 1);
-
-        usleep(value);
-        printf("\n\nHi from thread \n");
-
-
-
-        printf("Memorija pre alokacije\n");
-        avaib0=read_from_file();
-
-        int *ptr = (int*)malloc(10*1024*1024*N);
-        printf("Zauzeta memorija u kB: %ld\n", 10*1024*1024*N*sizeof(int)/1000);
-        prikaziZauzetostCpu();
-        //ispisiInfoOProcesu();
-        //printf("int: %ld\n", sizeof(int));
-
-        if (ptr == NULL) { printf("Memory not allocated.\n"); exit(0);}
-
-        else {
-            printf("\nMemory successfully allocated using malloc.\n");
-
-            long long int i=0;
-            while(i<1024LL*1024*1024*8){
-                i=i+1;
-            }
-
-
-            pid_t pid = getpid();
-            printf("My PID is: %d\n", pid);
-            double cpu_usage = get_cpu_usage(pid);
-            if (cpu_usage < 0.0) {
-                fprintf(stderr, "Failed to get CPU usage for PID %d.\n", pid);
-            }
-
-            printf("CPU usage for PID %d: %.2f%%\n", pid, cpu_usage);
-
-
-            for (uint j = 0; j <10*1024*1024 ; ++j) {
-                ptr[j] = 1;
-            }
-            avaib1=read_from_file();
-            //printf("\nRazlika Available memorije pre i nakon alokacije %d kB \n", avaib0-avaib1);
-
-        }
-        if(!func_ptr){
-            printf("Null pointer, napravljena nit ne radi nista\n");
-        }
-        else (*func_ptr)();
-
-        free(ptr);
-        printf("Memorija nakon oslobadjanja\n");
-        read_from_file();
-    }
-    return NULL;
-}
-
-
-uint read_from_file(){
-    FILE *meminfo = fopen("/proc/meminfo", "r");
-    if(meminfo == NULL){
-        printf("greska u otvaranju fajla") ;
-    }
-
-    char line2[MAX_LINE_LENGTH];
-    int i=0;
-    uint free;
-    uint avaib;
-    while(fgets(line2, MAX_LINE_LENGTH, meminfo) && i<54){
-        //if(i==0)printf("%s", line2);
-        if(i==1){
-            sscanf(line2, "MemFree: %d kB", &free) ;
-            printf("%s", line2);
-        }
-        if(i==2){
-            sscanf(line2, "MemAvailable: %d kB", &avaib) ;
-            printf("%s", line2);
-        }
-        i++;
-    }
-
-    fclose(meminfo);
-    return avaib;
-}
-
-
-
-int read_cpu_stats(unsigned long long *user, unsigned long long *nice,
-                   unsigned long long *system, unsigned long long *idle) {
-    FILE *fp;
-    char buffer[BUF_SIZE];
-    unsigned long long user_, nice_, system_, idle_;
-
-    fp = fopen("/proc/stat", "r");
-    if (fp == NULL) {
-        perror("Error opening /proc/stat");
-        return 0;
-    }
-
-    // Read the first line which starts with 'cpu'
-    if (fgets(buffer, BUF_SIZE - 1, fp) == NULL) {
-        fclose(fp);
-        return 0;
-    }
-
-    // Parse CPU stats
-    sscanf(buffer, "cpu %llu %llu %llu %llu", &user_, &nice_, &system_, &idle_);
-
-    fclose(fp);
-
-    // Return values via pointers
-    *user = user_;
-    *nice = nice_;
-    *system = system_;
-    *idle = idle_;
-
-    return 1;
-}
-
-
-int prikaziZauzetostCpu(){
-
-    unsigned long long user, nice, system, idle;
-    unsigned long long user_prev, nice_prev, system_prev, idle_prev;
-    double usage;
-
-    // Read initial CPU stats
-    if (!read_cpu_stats(&user_prev, &nice_prev, &system_prev, &idle_prev)) {
-        fprintf(stderr, "Failed to read initial CPU stats.\n");
-        return 1;
-    }
-
-    // Wait or perform some work
-    // For demonstration, let's read again after a delay
-    sleep(1);
-
-    // Read updated CPU stats
-    if (!read_cpu_stats(&user, &nice, &system, &idle)) {
-        fprintf(stderr, "Failed to read updated CPU stats.\n");
-        return 1;
-    }
-
-    // Calculate total CPU time
-    unsigned long long total_prev = user_prev + nice_prev + system_prev + idle_prev;
-    unsigned long long total = user + nice + system + idle;
-
-    // Calculate CPU usage percentage
-    usage = ((total - total_prev) - (idle - idle_prev)) * 100.0 / (total - total_prev);
-
-    printf("CPU Usage: %.2f%%\n", usage);
-    return 0;
-}
-
-
-// Function to read and print process information for a given PID
-void print_process_info(pid_t pid) {
-    char proc_path[MAX_BUF_SIZE];
-    snprintf(proc_path, sizeof(proc_path), "/proc/%d/stat", pid);
-
-    FILE *fp = fopen(proc_path, "r");
-    if (fp == NULL) {
-        perror("Error opening file");
-        return;
-    }
-
-    // Read the first line from the stat file
-    char buf[MAX_BUF_SIZE];
-    if (fgets(buf, sizeof(buf), fp) == NULL) {
-        fclose(fp);
-        return;
-    }
-
-    fclose(fp);
-
-    // Parse the information from the stat file
-    char comm[MAX_BUF_SIZE];
-    char state;
-    int ppid;
-    unsigned long utime, stime, vsize, rss;
-
-    sscanf(buf, "%c %d %ld %ld %lu %lu",  &state, &ppid, &utime, &stime, &vsize, &rss);
-
-    // Convert RSS from pages to kilobytes for better readability
-    rss *= (unsigned long) sysconf(_SC_PAGESIZE) / 1024;
-    printf("\nprocesi kojima fizicka mem nije 0");
-    if(rss!=0){
-        // Print the parsed information
-        printf("PID: %d\n", pid);
-        printf("Command: %s\n", comm);
-        printf("State: %c\n", state);
-        printf("Parent PID: %d\n", ppid);
-        printf("User CPU time: %lu\n", utime);
-        printf("System CPU time: %lu\n", stime);
-        printf("Virtual Memory Size: %lu KB\n", vsize);
-        printf("Physical Memory (RSS): %lu KB\n", rss);
-        printf("\n");
-    }
-
-}
-
-int ispisiInfoOProcesu() {
-
-    printf("\n informacije o procesu");
-    DIR *dir;
-    struct dirent *ent;
-    pid_t my_pid = getpid();  // Get current process PID
-
-    // Open the /proc directory
-    if ((dir = opendir("/proc")) != NULL) {
-        // Iterate over all entries in the /proc directory
-        while ((ent = readdir(dir)) != NULL) {
-            // Check if the entry is a directory and its name consists only of digits (process ID)
-            if (ent->d_type == DT_DIR && atoi(ent->d_name) != 0) {
-                pid_t pid = atoi(ent->d_name);
-                if (pid != my_pid) {  // Skip current process
-                    print_process_info(pid);
-                }
-            }
-        }
-        closedir(dir);
-    } else {
-        perror("Error opening /proc directory");
-        return 1;
-    }
-
-    return 0;
-}
-
-
-// Function to get system uptime in seconds
-long uptime() {
-    FILE *fp;
-    char path[PATH_MAX];
-    long uptime_seconds = 0;
-
-    // Open the uptime file
-    snprintf(path, PATH_MAX, "/proc/uptime");
-    fp = fopen(path, "r");
-    if (fp == NULL) {
-        perror("fopen");
-        return -1;
-    }
-
-    // Read uptime value
-    if (fscanf(fp, "%ld", &uptime_seconds) != 1) {
-        perror("fscanf");
-        fclose(fp);
-        return -1;
-    }
-
-    fclose(fp);
-    return uptime_seconds;
-}
-
-
-// Function to calculate CPU usage for a given process ID (PID)
-double get_cpu_usage(int pid) {
-    FILE *fp;
-    char path[PATH_MAX];
-    char line[PATH_MAX];
-    char *token;
-    long utime_ticks, stime_ticks, cutime_ticks, cstime_ticks;
-    long total_ticks, seconds;
-    double cpu_usage;
-
-    // Open the stat file for the given process ID
-    snprintf(path, PATH_MAX, "/proc/%d/stat", pid);
-    fp = fopen(path, "r");
-    if (fp == NULL) {
-        perror("fopen");
-        return -1.0;
-    }
-
-    // Read the line from stat file
-    if (fgets(line, PATH_MAX, fp) == NULL) {
-        perror("fgets");
-        fclose(fp);
-        return -1.0;
-    }
-
-    fclose(fp);
-
-    // Extract CPU time information from the line
-    token = strtok(line, " ");  // Skip PID
-    for (int i = 0; i < 13; ++i) {
-        token = strtok(NULL, " ");  // Move to the 14th field (utime)
-    }
-
-    // Read CPU time in clock ticks
-    utime_ticks = atol(token);
-    token = strtok(NULL, " ");  // stime
-    stime_ticks = atol(token);
-    token = strtok(NULL, " ");  // cutime
-    cutime_ticks = atol(token);
-    token = strtok(NULL, " ");  // cstime
-    cstime_ticks = atol(token);
-
-    // Calculate total CPU time in clock ticks
-    total_ticks = utime_ticks + stime_ticks + cutime_ticks + cstime_ticks;
-
-    // Calculate seconds since the process started
-    seconds = 10.0;
-
-    // Calculate CPU usage percentage
-    cpu_usage = 100 * ((double)total_ticks / sysconf(_SC_CLK_TCK)) / seconds;
-
-    return cpu_usage;
-}
-
-
-
+ResourceUsage* usage= new ResourceUsage();
 
 // Funkcija za prikupljanje i vraćanje podataka o zauzetosti CPU-a i memorije
 ResourceUsage* get_resource_usage(pid_t pid) {
@@ -417,7 +80,6 @@ ResourceUsage* get_resource_usage(pid_t pid) {
 }
 
 
-ResourceUsage* usage= nullptr;
 
 ResourceUsage* test(const char* process_name) {
     pthread_t th1, th2;
@@ -492,24 +154,27 @@ pid_t get_pid_by_name(const char* name) {
 double measure_time_elapsed(const struct timespec *last_check_time) {
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
-
     double elapsed = (now.tv_sec - last_check_time->tv_sec) +
                      (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
-
     return elapsed;
 }
+
+
 
 // Simulira opterećenje CPU-a na osnovu `load_factor`
 void simulate_cpu_load(double load_factor) {
     struct timespec start, active_start, active_end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    double total_time = 2.0; // Ukupno vreme simulacije u sekundama
+    double total_time = 15.0; // Ukupno vreme simulacije u sekundama
     double busy_time, idle_time;
+
+    pid_t pid= getpid();
 
     while (measure_time_elapsed(&start) < total_time) {
         busy_time = load_factor; // Aktivno vreme u sekundi
         idle_time = 1.0 - load_factor; // Idle vreme u sekundi
+
 
         clock_gettime(CLOCK_MONOTONIC, &active_start);
 
@@ -545,7 +210,10 @@ void simulate_cpu_load(double load_factor) {
 
         // Pauza između iteracija kako bi se omogućilo stabilizovanje opterećenja
         usleep(100000); // 0.1 sekundi
+
+        usage = get_resource_usage(pid);
     }
+    usage = get_resource_usage(pid);
 }
 
 
@@ -636,6 +304,11 @@ double get_cpu_usage_for_pid(pid_t pid) {
     unsigned long diff_stime = stime - prev_stime;
     unsigned long diff_total_time = diff_utime + diff_stime;
 
+    if (diff_total_time < 0) {
+        fprintf(stderr, "Error: negative time difference detected.\n");
+        return -1.0;
+    }
+
     // Dobijanje clock ticks po sekundi
     long clk_tck = sysconf(_SC_CLK_TCK);
     if (clk_tck <= 0) {
@@ -652,7 +325,6 @@ double get_cpu_usage_for_pid(pid_t pid) {
 
     return cpu_usage_percentage;
 }
-
 
 
 void *worker1(void *data) {
@@ -688,6 +360,9 @@ void *worker1(void *data) {
 
         // Pauza između iteracija kako bi se uočila promena u opterećenju
         usleep(100000); // 0.1 sekundi
+        usage = get_resource_usage(pid);
+        usage->set_cpu_usage(cpu_usage);
+        usage->set_memory_usage(memory_usage);
     }
 
     return NULL;
@@ -720,20 +395,7 @@ long get_memory_usage_for_pid(pid_t pid) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 
 // Funkcija koja prikuplja CPU vreme iz /proc/[PID]/stat
@@ -909,3 +571,21 @@ void *worker2(void *data) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Dodajte novu funkciju za ispis zauzetosti CPU-a i memorije
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv *env, jobject thiz) {
+    // Uzmimo PID trenutnog procesa
+    pid_t pid = getpid();
+
+    // Prikupi podatke o CPU-u i memoriji
+    double cpu_usage = get_cpu_usage_for_pid(pid);
+    long memory_usage = get_memory_usage_for_pid(pid);
+
+    // Kreiraj string za ispis rezultata
+    std::string resultStr = "CPU Usage: " + std::to_string(cpu_usage) +
+                            "%, Memory Usage: " + std::to_string(memory_usage) + " KB";
+
+    // Pretvori std::string u jstring
+    return env->NewStringUTF(resultStr.c_str());
+}

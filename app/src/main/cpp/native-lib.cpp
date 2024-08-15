@@ -20,6 +20,7 @@
 
 extern "C" ResourceUsage* Sara();
 
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_prekopiranceokod_MainActivity_callNativeFunction(JNIEnv *env, jobject thiz) {
@@ -33,3 +34,8 @@ Java_com_example_prekopiranceokod_MainActivity_callNativeFunction(JNIEnv *env, j
     // Pretvori std::string u jstring
     return env->NewStringUTF(resultStr.c_str());
 }
+
+extern "C" {
+jstring Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv* env, jobject thiz);
+}
+

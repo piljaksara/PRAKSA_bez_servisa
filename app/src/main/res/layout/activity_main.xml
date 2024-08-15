@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!-- Postojeće dugme -->
+    <Button
+        android:id="@+id/button_existing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ON/OFF"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_background"/>
 
-        <TextView
-            android:id="@+id/sample_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!-- Novo dugme -->
+    <Button
+        android:id="@+id/button_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usage"
+        android:background="@drawable/button_background"/>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="On/Off"
-            app:layout_constraintTop_toBottomOf="@id/sample_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Placeholder for Snackbar -->
+    <!-- Kontejner za Snackbar -->
     <FrameLayout
         android:id="@+id/snackbar_container"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"/>
+    <TextView
+        android:id="@+id/cpu_usage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:padding="16dp"/>
+        android:text="CPU Usage: 0%"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <TextView
+        android:id="@+id/memory_usage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Memory Usage: 0 KB"
+        android:textSize="18sp"
+        android:layout_below="@id/cpu_usage"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
+</LinearLayout>

@@ -42,21 +42,7 @@ ResourceUsage*  Sara()
 
      const char* process_name = argv[1];*/
     const char* process_name="helloworld";
-    /*FunkcijaUC(&FunkcijaUCppKojaSePozivaIzC);
-    printf("\n");
-    init();
 
-
-    pid_t pid = getpid();
-    printf("My PID is: %d\n", pid);
-    double cpu_usage = get_cpu_usage(pid);
-    if (cpu_usage < 0.0) {
-        fprintf(stderr, "Failed to get CPU usage for PID %d.\n", pid);
-        return 1;
-    }
-
-    printf("CPU usage for PID %d: %.2f%%\n", pid, cpu_usage);
-    */
 
 
     //prikaziZauzetostCpu();

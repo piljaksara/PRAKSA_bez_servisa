@@ -13,4 +13,6 @@
     <color name="snackbar_background">#FFFFFF</color> <!-- Bela boja za Snackbar -->
     <color name="snackbar_text">#6200EE</color> <!-- Ljubičasta boja za tekst Snackbar-a -->
     <color name="actionTextColor">#03FFFF</color>
+    <!-- res/values/colors.xml -->
+
 </resources>

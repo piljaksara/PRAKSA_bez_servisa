@@ -13,6 +13,7 @@ public:
     double getCpuUsage() const { return cpu_usage; }
     long getMemoryUsage() const { return memory_usage; }
 
+
     // Setteri
     void set_cpu_usage(double cpu) { cpu_usage = cpu; }
     void set_memory_usage(long memory) { memory_usage = memory; }
@@ -22,4 +23,5 @@ public:
         std::cout << "CPU Usage: " << cpu_usage << "%" << std::endl;
         std::cout << "Memory Usage: " << memory_usage << " KB" << std::endl;
     }
+
 };
