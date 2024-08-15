@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +6,6 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
-    <!-- Postojeće dugme -->
     <Button
         android:id="@+id/button_existing"
         android:layout_width="wrap_content"
@@ -16,7 +14,6 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_background"/>
 
-    <!-- Novo dugme -->
     <Button
         android:id="@+id/button_new"
         android:layout_width="wrap_content"
@@ -24,29 +21,17 @@
         android:text="Usage"
         android:background="@drawable/button_background"/>
 
-    <!-- Kontejner za Snackbar -->
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resource Usage will appear here"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
     <FrameLayout
         android:id="@+id/snackbar_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"/>
-    <TextView
-        android:id="@+id/cpu_usage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CPU Usage: 0%"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/memory_usage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Memory Usage: 0 KB"
-        android:textSize="18sp"
-        android:layout_below="@id/cpu_usage"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" />
 </LinearLayout>
