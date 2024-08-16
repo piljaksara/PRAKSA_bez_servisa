@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity() {
 
         handler = Handler()
         textView = findViewById(R.id.text_view)
+
+        // Inicialno postavljanje TextView na nevidljiv
+        textView.visibility = View.GONE
 
         val buttonExisting = findViewById<Button>(R.id.button_existing)
         buttonExisting.setOnClickListener {
@@ -62,10 +66,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startMonitoring() {
+        textView.visibility = View.VISIBLE
         handler.post(updateRunnable)
     }
 
     private fun stopMonitoring() {
+        textView.visibility = View.GONE
         handler.removeCallbacks(updateRunnable)
     }
 

@@ -99,3 +99,9 @@ void stop_monitoring() {
         }
     }
 }
+/*
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_prekopiranceokod_MainActivity_callNativeFunction2(JNIEnv *env, jobject thiz) {
+    ResourceUsage* usage = Sara();
+}*/
