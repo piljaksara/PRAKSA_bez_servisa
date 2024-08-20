@@ -1,3 +1,4 @@
+<!-- res/layout/activity_main.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,21 +7,35 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button_existing"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ON/OFF"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_background"/>
+        android:elevation="8dp"
+         android:layout_margin="16dp"
+         android:background="@drawable/button_background">
 
     <Button
-        android:id="@+id/button_new"
+        android:id="@+id/button_existing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ON/OFF"/>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Usage"
-        android:background="@drawable/button_background"/>
+        android:elevation="8dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/button_background">
+    <Button
+        android:id="@+id/button_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Usage"/>
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:id="@+id/text_view"
@@ -32,7 +47,6 @@
         android:visibility="gone"
         android:background="@drawable/textview_border"
         android:padding="8dp"/>
-
 
     <CheckBox
         android:id="@+id/checkbox1"

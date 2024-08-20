@@ -5,11 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iostream>
-#include <vector>
-#include <string>
 #include <cstdio>
-#include <unistd.h>
 #include <unistd.h>
 #include <pthread.h>
 #include "functions.c"

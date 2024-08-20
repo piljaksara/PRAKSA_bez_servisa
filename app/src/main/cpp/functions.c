@@ -12,7 +12,6 @@
 #include<sys/time.h>
 #include <sys/times.h>
 //#include "native-functions.h"
-#include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <errno.h>
