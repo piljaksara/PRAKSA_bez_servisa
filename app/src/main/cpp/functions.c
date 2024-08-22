@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include<sys/time.h>
 #include <sys/times.h>
-//#include "native-functions.h"
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -32,12 +31,6 @@
 #define LOG_TAG "NativeCode"
 
 
-#if 0
-typedef struct {
-    double cpu_usage;
-    long memory_usage;
-} ResourceUsage;
-#endif
 
 // Flag za kontrolu intenzivnog opterećenja
 int stop_flag = 0;
@@ -510,7 +503,6 @@ void simulate_decreasing_cpu_usage(pid_t pid) {
         total_used_memory -= released_memory;
         total_released_memory += released_memory;
 
-        // Ispis informacija
         if (cpu_usage >= 0) {
             printf("CPU opterećenje za proces sa PID %d: %.2f%%\n", pid, cpu_usage);
         } else {
