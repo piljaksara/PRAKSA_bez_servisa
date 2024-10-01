@@ -3,9 +3,9 @@
     <!-- Kada je dugme fokusirano -->
     <item android:state_focused="true" android:state_enabled="true">
         <shape android:shape="rectangle">
-            <solid android:color="#FFCDD2" /> <!-- Svetlo crvena boja za fokus -->
+            <solid android:color="#BBDEFB" /> <!-- Svetlo plava boja za fokus -->
             <corners android:radius="4dp" /> <!-- Manji radijus uglova -->
-            <stroke android:width="2dp" android:color="#B39DDB" /> <!-- Tamnija ljubičasta boja i širi okvir -->
+            <stroke android:width="2dp" android:color="#0D47A1" /> <!-- Tamna plava boja i širi okvir -->
             <padding android:left="4dp" android:top="8dp" android:right="4dp" android:bottom="8dp" /> <!-- Veći padding gornje i donje strane -->
         </shape>
     </item>
@@ -13,9 +13,9 @@
     <!-- Kada je dugme pritisnuto -->
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#EF9A9A" /> <!-- Malo tamnija svetlo crvena boja za pritisnuto stanje -->
+            <solid android:color="#90CAF9" /> <!-- Malo tamnija svetlo plava boja za pritisnuto stanje -->
             <corners android:radius="4dp" />
-            <stroke android:width="1dp" android:color="#B39DDB" /> <!-- Tanji okvir i tamnija ljubičasta -->
+            <stroke android:width="1dp" android:color="#0D47A1" /> <!-- Tanji okvir i tamnija plava -->
             <padding android:left="4dp" android:top="8dp" android:right="4dp" android:bottom="8dp" /> <!-- Veći padding gornje i donje strane -->
         </shape>
     </item>
@@ -23,9 +23,9 @@
     <!-- Kada je dugme u normalnom stanju -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#E1BEE7" /> <!-- Svetla ljubičasta boja za normalno stanje -->
+            <solid android:color="#E3F2FD" /> <!-- Svetla plava boja za normalno stanje -->
             <corners android:radius="4dp" /> <!-- Manji radijus uglova -->
-            <stroke android:width="0.5dp" android:color="#B39DDB" /> <!-- Još manji okvir i tamnija ljubičasta -->
+            <stroke android:width="0.5dp" android:color="#0D47A1" /> <!-- Još manji okvir i tamnija plava -->
             <padding android:left="4dp" android:top="8dp" android:right="4dp" android:bottom="8dp" /> <!-- Veći padding gornje i donje strane -->
         </shape>
     </item>

@@ -6,8 +6,8 @@
             <!-- Pozadina dugmeta -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="#FFCDD2" /> <!-- Svetlo crvena boja -->
-                    <corners android:radius="1dp" />
+                    <solid android:color="#BBDEFB" /> <!-- Svetla plava boja -->
+                    <corners android:radius="4dp" />
                 </shape>
             </item>
         </layer-list>
@@ -19,8 +19,8 @@
             <!-- Pozadina dugmeta -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="#EF9A9A" /> <!-- Malo tamnija svetlo crvena boja -->
-                    <corners android:radius="1dp" />
+                    <solid android:color="#90CAF9" /> <!-- Malo tamnija svetla plava boja -->
+                    <corners android:radius="4dp" />
                 </shape>
             </item>
         </layer-list>
@@ -32,8 +32,8 @@
             <!-- Pozadina dugmeta -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="#E1BEE7" /> <!-- Svetla ljubičasta boja -->
-                    <corners android:radius="1dp" />
+                    <solid android:color="#E1F5FE" /> <!-- Svetla plava boja -->
+                    <corners android:radius="4dp" />
                 </shape>
             </item>
         </layer-list>

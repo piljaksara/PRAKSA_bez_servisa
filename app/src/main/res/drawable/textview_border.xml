@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Pozadina unutar okvira -->
-    <solid android:color="#E0E0FF"/> <!-- Svetla plava nijansa -->
+    <!-- Svetla plava pozadina -->
+    <solid android:color="#ADD8E6"/> <!-- Svetla plava nijansa -->
 
     <!-- Okvir oko TextView-a -->
     <stroke

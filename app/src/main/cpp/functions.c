@@ -2,7 +2,8 @@
 //
 // Created by sarap on 8/5/2024.
 //
-
+#include <sys/sysinfo.h>  // Dodajte ovu liniju
+#include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -21,6 +22,18 @@
 #include <android/log.h>
 #include "ResourceUsage.cpp"
 #include <jni.h>
+#include <iostream>
+#include <string>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <regex>
 
 
 #define MAX_LINE_LENGTH 100
@@ -118,6 +131,14 @@ ResourceUsage* test(const char* process_name) {
 }
 
 
+double measure_time_elapsed(const struct timespec *last_check_time) {
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    double elapsed = (now.tv_sec - last_check_time->tv_sec) +
+                     (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
+    return elapsed;
+}
+
 
 
 // Funkcija za pronalaženje PID-a procesa sa zadatim imenom
@@ -141,17 +162,6 @@ pid_t get_pid_by_name(const char* name) {
     pclose(fp);
     return pid;
 }
-
-
-double measure_time_elapsed(const struct timespec *last_check_time) {
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    double elapsed = (now.tv_sec - last_check_time->tv_sec) +
-                     (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
-    return elapsed;
-}
-
-
 
 // Simulira opterećenje CPU-a na osnovu `load_factor`
 void simulate_cpu_load(double load_factor) {
@@ -208,7 +218,6 @@ void simulate_cpu_load(double load_factor) {
     usage = get_resource_usage(pid);
 }
 
-
 // Funkcija za simulaciju zauzimanja memorije pomocu malloc
 void simulate_memory_allocation_c(double load_factor) {
     const size_t chunk_size = 1024 * 1024; // Velicina jednog chunk-a je 1 MB
@@ -257,68 +266,6 @@ void simulate_memory_allocation_c(double load_factor) {
     free(memory_chunks);*/
 }
 
-double get_cpu_usage_for_pid(pid_t pid) {
-    static unsigned long prev_utime = 0;
-    static unsigned long prev_stime = 0;
-    static struct timespec last_check_time = {0};
-
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-
-    // Izračunaj vreme proteklo od poslednjeg merenja
-    double elapsed = measure_time_elapsed(&last_check_time);
-    if (elapsed < 1.0) {
-        // Ako je prošlo manje od 1 sekunde, vrati prethodnu vrednost
-        return -1.0;
-    }
-
-    char stat_path[MAX_BUF_SIZE];
-    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
-
-    FILE *fp = fopen(stat_path, "r");
-    if (!fp) {
-        perror("Error opening stat file");
-        return -1.0;
-    }
-
-    // Čitanje potrebnih vrednosti iz /proc/[PID]/stat
-    unsigned long utime, stime, total_time;
-    if (fscanf(fp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &utime, &stime) != 2) {
-        perror("Error reading values from stat file");
-        fclose(fp);
-        return -1.0;
-    }
-    fclose(fp);
-
-    // Izračunavanje ukupnog CPU vremena u clock ticks (jiffies)
-    total_time = utime + stime;
-    unsigned long diff_utime = utime - prev_utime;
-    unsigned long diff_stime = stime - prev_stime;
-    unsigned long diff_total_time = diff_utime + diff_stime;
-
-    if (diff_total_time < 0) {
-        fprintf(stderr, "Error: negative time difference detected.\n");
-        return -1.0;
-    }
-
-    // Dobijanje clock ticks po sekundi
-    long clk_tck = sysconf(_SC_CLK_TCK);
-    if (clk_tck <= 0) {
-        perror("Error getting clock ticks per second");
-        return -1.0;
-    }
-
-    // Izračunavanje CPU opterećenja
-    double cpu_usage_percentage = ((double)diff_total_time / (clk_tck * elapsed)) * 100.0;
-
-    prev_utime = utime;
-    prev_stime = stime;
-    last_check_time = now;
-
-    return cpu_usage_percentage;
-}
-
-
 void *worker1(void *data) {
     printf("\n\nHi from thread 1 \n");
     //__android_log_print(ANDROID_LOG_INFO, LOG_TAG, "Hi from thread 1");
@@ -359,33 +306,6 @@ void *worker1(void *data) {
 
     return NULL;
 }
-// Function to get memory usage (RSS) for a given PID
-long get_memory_usage_for_pid(pid_t pid) {
-    char status_path[MAX_BUF_SIZE];
-    sprintf(status_path, "/proc/%d/status", pid);
-
-    FILE *fp = fopen(status_path, "r");
-    if (!fp) {
-        perror("Error opening status file");
-        return -1;
-    }
-
-    // Read the RSS (Resident Set Size) value from /proc/[PID]/status
-    long rss = -1;
-    char line[MAX_BUF_SIZE];
-    const char *search = "VmRSS:";
-    while (fgets(line, sizeof(line), fp)) {
-        if (strncmp(line, search, strlen(search)) == 0) {
-            if (sscanf(line, "%*s %ld", &rss) == 1) {
-                break;
-            }
-        }
-    }
-    fclose(fp);
-
-    return rss;
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -561,22 +481,240 @@ void *worker2(void *data) {
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Dodajte novu funkciju za ispis zauzetosti CPU-a i memorije
+///////////////////////////////////////////////////////////////////////////////////
+
+double get_cpu_usage_for_pid(pid_t pid) {
+    static unsigned long prev_utime = 0;
+    static unsigned long prev_stime = 0;
+    static struct timespec last_check_time = {0};
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    // Izračunaj vreme proteklo od poslednjeg merenja
+    double elapsed = measure_time_elapsed(&last_check_time);
+    if (elapsed < 1.0) {
+        // Ako je prošlo manje od 1 sekunde, vrati prethodnu vrednost
+        return -1.0;
+    }
+
+    char stat_path[MAX_BUF_SIZE];
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+
+    FILE *fp = fopen(stat_path, "r");
+    if (!fp) {
+        perror("Error opening stat file");
+        return -1.0;
+    }
+
+    // Čitanje potrebnih vrednosti iz /proc/[PID]/stat
+    unsigned long utime, stime, total_time;
+    if (fscanf(fp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &utime, &stime) != 2) {
+        perror("Error reading values from stat file");
+        fclose(fp);
+        return -1.0;
+    }
+    fclose(fp);
+
+    // Izračunavanje ukupnog CPU vremena u clock ticks (jiffies)
+    total_time = utime + stime;
+    unsigned long diff_utime = utime - prev_utime;
+    unsigned long diff_stime = stime - prev_stime;
+    unsigned long diff_total_time = diff_utime + diff_stime;
+
+    if (diff_total_time < 0) {
+        fprintf(stderr, "Error: negative time difference detected.\n");
+        return -1.0;
+    }
+
+    // Dobijanje clock ticks po sekundi
+    long clk_tck = sysconf(_SC_CLK_TCK);
+    if (clk_tck <= 0) {
+        perror("Error getting clock ticks per second");
+        return -1.0;
+    }
+
+    // Izračunavanje CPU opterećenja
+    double cpu_usage_percentage = ((double)diff_total_time / (clk_tck * elapsed)) * 100.0;
+
+    prev_utime = utime;
+    prev_stime = stime;
+    last_check_time = now;
+
+    return cpu_usage_percentage;
+}
+
+long get_memory_usage_for_pid(pid_t pid) {
+    char status_path[MAX_BUF_SIZE];
+    sprintf(status_path, "/proc/%d/status", pid);
+
+    FILE *fp = fopen(status_path, "r");
+    if (!fp) {
+        perror("Error opening status file");
+        return -1;
+    }
+
+    long rss = -1;
+    char line[MAX_BUF_SIZE];
+    const char *search = "VmRSS:";
+    while (fgets(line, sizeof(line), fp)) {
+        if (strncmp(line, search, strlen(search)) == 0) {
+            if (sscanf(line, "%*s %ld", &rss) == 1) {
+                break;
+            }
+        }
+    }
+    fclose(fp);
+
+    return rss;
+}
+
+
+
+// Funkcija za merenje proteklog vremena u sekundama
+double measure_time_elapsed2(struct timespec *last_check_time) {
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now); // Uzimanje trenutnog vremena
+
+    // Izračunavanje proteklog vremena
+    double elapsed = (now.tv_sec - last_check_time->tv_sec) +
+                     (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
+
+    // Proverite da li je proteklo više od jedne sekunde
+    if (elapsed >= 1.0) {
+        // Ažurirajte poslednje vreme
+        *last_check_time = now;
+    }
+
+    return elapsed; // Vraća proteklo vreme u sekundama
+}
+
+
+
+int get_total_cpu_usage(double *cpu_usage) {
+    static unsigned long long prev_user = 0;
+    static unsigned long long prev_nice = 0;
+    static unsigned long long prev_system = 0;
+    static unsigned long long prev_idle = 0;
+    static struct timespec last_check_time = {0};
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    // Izračunaj vreme proteklo od poslednjeg merenja
+    double elapsed = measure_time_elapsed2(&last_check_time);
+    if (elapsed < 1.0) {
+        return -1; // Ako je prošlo manje od 1 sekunde, vrati prethodnu vrednost
+    }
+
+    // Otvori /proc/stat
+    FILE *fp = fopen("/proc/stat", "r");
+    if (!fp) {
+        perror("Error opening /proc/stat");
+        return -1;
+    }
+
+    unsigned long long user, nice, system, idle;
+    // Pročitaj prvi red iz /proc/stat
+    fscanf(fp, "cpu %llu %llu %llu %llu", &user, &nice, &system, &idle);
+    fclose(fp);
+
+    // Izračunaj ukupno vreme
+    unsigned long long total_time = user + nice + system + idle;
+
+    // Izračunaj razlike
+    unsigned long long diff_user = user - prev_user;
+    unsigned long long diff_nice = nice - prev_nice;
+    unsigned long long diff_system = system - prev_system;
+    unsigned long long diff_idle = idle - prev_idle;
+    unsigned long long diff_total = diff_user + diff_nice + diff_system + diff_idle;
+
+    if (diff_total == 0) {
+        *cpu_usage = 0; // Ako nema promene, CPU opterećenje je 0%
+        return 0;
+    }
+
+    // Izračunaj CPU opterećenje
+    double cpu_usage_percentage = 100.0 * (diff_total - diff_idle) / diff_total;
+
+    // Sačuvaj trenutne vrednosti za sledeće merenje
+    prev_user = user;
+    prev_nice = nice;
+    prev_system = system;
+    prev_idle = idle;
+
+    *cpu_usage = cpu_usage_percentage; // Postavi vrednost u pokazivač
+    return 0; // Uspešno završeno
+}
+
+
+
+uint get_available_memory() {
+    FILE *meminfo = fopen("/proc/meminfo", "r");
+    if (meminfo == NULL) {
+        printf("Greška u otvaranju fajla\n");
+        return 0; // Vraćamo 0 kao indikator greške
+    }
+
+    char line[MAX_LINE_LENGTH];
+    uint available = 0;
+
+    while (fgets(line, MAX_LINE_LENGTH, meminfo)) {
+        if (sscanf(line, "MemAvailable: %u kB", &available) == 1) {
+            break; // Pronađena MemAvailable, izlazimo iz petlje
+        }
+    }
+
+    fclose(meminfo);
+    return available; // Vraća dostupnu memoriju u kB
+}
+
+void* simulate_cpu_load2(void* arg) {
+    while (1) {
+        // Ovdje možete dodati kod koji opterećuje CPU
+        // Na primer, bespotrebni izračuni:
+        double x = 0.0;
+        for (long i = 0; i < 1000000; ++i) {
+            x += (double)i;
+        }
+        // Očigledno, ovde ništa ne radimo, ali to opterećuje CPU
+    }
+    return NULL; // Vratite NULL na kraju
+}
+
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv *env, jobject thiz) {
-    // Uzmimo PID trenutnog procesa
-    pid_t pid = getpid();
+Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv *env, jobject thiz, jstring pid_jstring) {
+    const char *pidCStr = env->GetStringUTFChars(pid_jstring, nullptr);
+    std::string pidStr(pidCStr);
+    env->ReleaseStringUTFChars(pid_jstring, pidCStr);
 
-    // Prikupi podatke o CPU-u i memoriji
+
+    pthread_t thread_id;
+    pthread_create(&thread_id, NULL, simulate_cpu_load2, NULL);
+
+
+    int pid = std::stoi(pidStr);
     double cpu_usage = get_cpu_usage_for_pid(pid);
     long memory_usage = get_memory_usage_for_pid(pid);
 
-    // Kreiraj string za ispis rezultata
-    std::string resultStr = "CPU Usage: " + std::to_string(cpu_usage) +
-                            "%, Memory Usage: " + std::to_string(memory_usage) + " KB";
+    // Dobijanje ukupne zauzetosti CPU i dostupne memorije
+    double total_cpu_usage;
+    if (get_total_cpu_usage(&total_cpu_usage) != 0) {
+        fprintf(stderr, "Neuspešno dobijanje ukupne CPU zauzetosti.\n");
+    }
 
-    // Pretvori std::string u jstring
+    uint available_memory = get_available_memory();
+
+    // Formatiranje rezultata
+    std::string resultStr = "CPU Usage (PID " + std::to_string(pid) + "): " + std::to_string(cpu_usage) +
+                            "%, Memory Usage: " + std::to_string(memory_usage) + " KB\n" +
+                            "Total CPU Usage: " + std::to_string(total_cpu_usage) +
+                            "%, Available Memory: " + std::to_string(available_memory) + " kB\n";
+
+    // Sleep for 1 second before the next measurement
+    sleep(1);
+
+    // Vraćanje rezultata kao Java string
     return env->NewStringUTF(resultStr.c_str());
 }

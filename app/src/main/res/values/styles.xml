@@ -11,6 +11,7 @@
     <!-- Custom Snackbar Style -->
     <style name="CustomSnackbar" parent="Widget.MaterialComponents.Snackbar">
         <item name="backgroundTint">@color/snackbar_background</item>
+        <item name="android:textAppearance">@style/CustomSnackbarTextAppearance</item>
     </style>
 
     <!-- Custom TextAppearance for Snackbar -->
