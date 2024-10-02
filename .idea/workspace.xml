@@ -25,11 +25,6 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/prekopiran_ceo_kod.app.androidTest.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/prekopiran_ceo_kod.app.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/prekopiran_ceo_kod.app.unitTest.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/arm64-v8a/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/arm64-v8a/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/arm64-v8a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/arm64-v8a/.ninja_log" afterDir="false" />
@@ -39,14 +34,9 @@
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/CMakeFiles/prekopiranceokod.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/CMakeFiles/prekopiranceokod.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/armeabi-v7a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.cmake/api/v1/reply/cache-v2-e868a113ae47255e399a.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.cmake/api/v1/reply/cmakeFiles-v1-84b0e0bccd7c6f5deac1.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeFiles/CMakeOutput.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeFiles/prekopiranceokod.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/CMakeFiles/prekopiranceokod.dir/main.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86/configure_fingerprint.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/.ninja_log" afterDir="false" />
@@ -56,12 +46,7 @@
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/cpp/functions.c" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/cpp/functions.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/prekopiranceokod/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/prekopiranceokod/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/button_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/button_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/shadow_button_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/shadow_button_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/textview_border.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/textview_border.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +56,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\sarap\.android\avd\Pixel_8_Pro_API_31.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=Default, isTemplate=false, identifier=serial=10.10.10.150:5555;connection=80471e5f)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -148,35 +133,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;AnalyzeApkAction.lastApkPath&quot;: &quot;C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/build/intermediates/apk/debug/app-debug.apk&quot;,
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;DEBUGGABLE_DEVICE&quot;: &quot;Pixel_8_Pro_API_31 [emulator-5554]&quot;,
-    &quot;DEBUGGABLE_PROCESS&quot;: &quot;com.example.prekopiranceokod&quot;,
-    &quot;DEBUGGER_ID&quot;: &quot;Auto&quot;,
-    &quot;Kotlin script (Beta).build.gradle.kts.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;SHOW_ALL_PROCESSES&quot;: &quot;false&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/build/intermediates/apk/debug/app-debug.apk&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Build Variants&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "AnalyzeApkAction.lastApkPath": "C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/build/intermediates/apk/debug/app-debug.apk",
+    "Android App.app.executor": "Run",
+    "DEBUGGABLE_DEVICE": "Pixel_8_Pro_API_31 [emulator-5554]",
+    "DEBUGGABLE_PROCESS": "com.example.prekopiranceokod",
+    "DEBUGGER_ID": "Auto",
+    "Kotlin script (Beta).build.gradle.kts.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHOW_ALL_PROCESSES": "false",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/build/intermediates/apk/debug/app-debug.apk",
+    "project.structure.last.edited": "Build Variants",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;kotlin-gradle-user-dirs&quot;: [
-      &quot;C:\\Users\\sarap\\.gradle&quot;
+  "keyToStringList": {
+    "kotlin-gradle-user-dirs": [
+      "C:\\Users\\sarap\\.gradle"
     ]
   }
-}</component>
+}]]></component>
   <component name="PsdUISettings">
     <option name="LAST_EDITED_BUILD_TYPE" value="debug" />
   </component>
@@ -280,6 +265,17 @@
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sa stilizovanjem" />
     <option name="LAST_COMMIT_MESSAGE" value="sa stilizovanjem" />
@@ -296,11 +292,6 @@
           <url>file://$PROJECT_DIR$/app/src/main/cpp/main.cpp</url>
           <line>45</line>
           <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/app/src/main/cpp/functions.c</url>
-          <line>701</line>
-          <option name="timeStamp" value="166" />
         </line-breakpoint>
         <breakpoint enabled="true" type="OCSymbolicBreakpointType">
           <properties>

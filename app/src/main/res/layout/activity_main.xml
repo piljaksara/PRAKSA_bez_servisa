@@ -1,106 +1,12 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     android:background="#40D3D3D3"
     android:padding="16dp"
+    android:orientation="vertical"
     tools:context=".MainActivity">
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_existing"
-        android:layout_width="200dp"
-    android:layout_height="wrap_content"
-    android:elevation="8dp"
-    android:layout_marginTop="150dp"
-    android:layout_centerHorizontal="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Unesi PID:"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
-
-        <EditText
-            android:id="@+id/edit_text_pid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_marginTop="16dp"
-            android:hint="Unesite PID"
-            android:minHeight="48dp"
-            android:inputType="number"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_margin="16dp"
-        android:layout_below="@id/card_existing"
-        android:layout_centerHorizontal="true">
-
-        <Button
-            android:id="@+id/button_new"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Usage" />
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/card_new"
-        android:layout_margin="16dp"
-        android:layout_centerInParent="true"
-        app:cardBackgroundColor="#80B3E5FC"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Izaberi procese:"
-                android:textSize="18sp"
-                android:layout_marginBottom="8dp" />
-
-            <CheckBox
-                android:id="@+id/checkbox1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="helloworld.c" />
-
-            <CheckBox
-                android:id="@+id/checkbox2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Proces 2" />
-
-            <CheckBox
-                android:id="@+id/checkbox3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Proces 3" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/text_view"
@@ -111,13 +17,83 @@
         android:visibility="gone"
         android:background="@drawable/textview_border"
         android:padding="8dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp" />
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_existing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unesi ime procesa:"
+                android:textSize="20sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/edit_text_process_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:hint="Unesite ime procesa"
+            android:minHeight="48dp"
+            android:inputType="text" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="#80B3E5FC"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Izaberi procese:"
+                android:textSize="20sp"
+                android:layout_marginBottom="8dp" />
+
+            <CheckBox
+                android:id="@+id/checkbox1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zauzetost za PID"
+                android:textSize="18sp" />
+
+            <CheckBox
+                android:id="@+id/checkbox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ukupna zauzetost"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:id="@+id/snackbar_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true" />
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
