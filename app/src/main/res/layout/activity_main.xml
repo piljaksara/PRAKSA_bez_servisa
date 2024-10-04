@@ -43,13 +43,13 @@
 
             <EditText
                 android:id="@+id/edit_text_process_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_marginTop="8dp"
-            android:hint="Unesite ime procesa"
-            android:minHeight="48dp"
-            android:inputType="text" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:layout_marginTop="8dp"
+                android:hint="Unesite ime procesa"
+                android:minHeight="48dp"
+                android:inputType="text" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -90,6 +90,16 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Novi TextView za prikaz zauzetosti memorije -->
+    <TextView
+        android:id="@+id/memory_usage_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Memory Usage will appear here"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:layout_marginTop="16dp" />
 
     <FrameLayout
         android:id="@+id/snackbar_container"
