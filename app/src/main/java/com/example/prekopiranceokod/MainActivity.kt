@@ -1,6 +1,7 @@
-package com.example.prekopiranceokod // Izmenjen naziv paketa
+package com.example.prekopiranceokod
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -8,74 +9,70 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
-import android.app.ActivityManager
 import android.content.Context
-import android.util.Log
+import android.os.Debug
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.io.File
 import java.util.regex.Pattern
-import java.io.RandomAccessFile
-import android.os.Debug
-import kotlin.concurrent.thread
-
-
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var handler: Handler
     private lateinit var textView: TextView
-    private lateinit var editTextProcessName: EditText // Izmenjeno ime varijable
+    private lateinit var editTextProcessName: EditText
+    private lateinit var editTextPid: EditText
     private lateinit var checkbox1: CheckBox
     private lateinit var checkbox2: CheckBox
+    private lateinit var checkbox3: CheckBox
     private var isMonitoring = false
     private val updateInterval: Long = 1000 // 1 sekunda
 
     private val updateRunnable = object : Runnable {
         override fun run() {
             if (isMonitoring) {
-                val processName = editTextProcessName.text.toString() // Preuzmite ime procesa
-                try {
-                    // Prvo dobijemo PID za proces
-                    val pid = 9780 // getPidForProcessName(processName)
+                val processName = editTextProcessName.text.toString()
+                val pidString = editTextPid.text.toString()
+                val pid = if (pidString.isNotEmpty()) pidString.toInt() else -1 // Uzmi PID iz EditText-a
 
+                try {
                     val resourceUsage: String = when {
+                        checkbox1.isChecked && checkbox2.isChecked && checkbox3.isChecked -> {
+                            getCpuUsageForProcessName(processName) + "\n" + getUsageForProcessPid(pid) + "\n" + getTotalCpuUsage()
+                        }
                         checkbox1.isChecked && checkbox2.isChecked -> {
-                            getCpuUsageForProcessName(processName) + "\n" + getTotalCpuUsage() // Ažurirajte poziv
+                            getCpuUsageForProcessName(processName) + "\n" + getTotalCpuUsage()
+                        }
+                        checkbox1.isChecked && checkbox3.isChecked -> {
+                            getCpuUsageForProcessName(processName) + "\n" + getUsageForProcessPid(pid)
+                        }
+                        checkbox2.isChecked && checkbox3.isChecked -> {
+                            getTotalCpuUsage() + "\n" + getUsageForProcessPid(pid)
                         }
                         checkbox1.isChecked -> {
-                            getCpuUsageForProcessName(processName) // Ažurirajte poziv
+                            getCpuUsageForProcessName(processName)
                         }
                         checkbox2.isChecked -> {
                             getTotalCpuUsage()
                         }
+                        checkbox3.isChecked -> {
+                            getUsageForProcessPid(pid)
+                        }
                         else -> ""
                     }
 
-                    // CPU zauzetost za PID
                     if (pid != -1) {
-                        calculateCpuUsage(this@MainActivity, pid) { cpuUsageForPid ->
-                            // Dodajte ispis CPU usage za PID
-                            val cpuInfo = "Zauzetost CPU za PID $pid: $cpuUsageForPid%"
+                        val memoryUsage = getMemoryUsageForProcess(processName)
+                        val coreCount = getCoreNum()
+                        val coreInfo = "Broj jezgara: $coreCount"
+                        val output = "$resourceUsage\nPodaci iz Activity Manager-a : $memoryUsage\n$coreInfo"
 
-                            // Dodajte poziv za zauzetost memorije
-                            val memoryUsage = getMemoryUsageForProcess(processName)
-
-                            // Dodajte poziv za broj jezgara
-                            val coreCount = getCoreNum()
-                            val coreInfo = "Broj jezgara: $coreCount "
-
-                            // Spojite rezultate
-                            val output = "$resourceUsage\n$memoryUsage\n$coreInfo $cpuInfo"
-
-                            // Osvežavanje UI na glavnom threadu
-                            runOnUiThread {
-                                textView.text = output
-                                textView.visibility = View.VISIBLE
-                            }
+                        runOnUiThread {
+                            textView.text = output
+                            textView.visibility = View.VISIBLE
                         }
                     }
                 } catch (e: Exception) {
@@ -86,28 +83,48 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         handler = Handler()
         textView = findViewById(R.id.text_view)
-        editTextProcessName = findViewById(R.id.edit_text_process_name) // Izmenjeno ime ID-a
+        editTextProcessName = findViewById(R.id.edit_text_process_name)
+        editTextPid = findViewById(R.id.edit_text_pid) // Inicijalizuj novi EditText
         checkbox1 = findViewById(R.id.checkbox1)
         checkbox2 = findViewById(R.id.checkbox2)
+        checkbox3 = findViewById(R.id.checkbox3)
 
-        // Inicialno postavljanje TextView na nevidljiv
         textView.visibility = View.GONE
-
         checkbox1.setOnCheckedChangeListener { _, _ -> handleCheckBoxes() }
         checkbox2.setOnCheckedChangeListener { _, _ -> handleCheckBoxes() }
+        checkbox3.setOnCheckedChangeListener { _, _ -> handleCheckBoxes() }
 
-        // Traženje dozvola
         requestPermissions()
+
+        // Postavite OnEditorActionListener
+        editTextProcessName.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                closeKeyboard(editTextProcessName)
+                true
+            } else {
+                false
+            }
+        }
+
+        editTextPid.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                closeKeyboard(editTextPid)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun closeKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun requestPermissions() {
@@ -126,13 +143,10 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Dozvola je data
-            } else {
-                // Dozvola nije data
-                showSnackbar("Dozvola nije data!")
-            }
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Dozvola je data
+        } else {
+            showSnackbar("Dozvola nije data!")
         }
     }
 
@@ -144,8 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleCheckBoxes() {
-        // Start/stop monitoring based on the checkboxes
-        if (checkbox1.isChecked || checkbox2.isChecked) {
+        if (checkbox1.isChecked || checkbox2.isChecked || checkbox3.isChecked) {
             startMonitoring()
         } else {
             stopMonitoring()
@@ -164,72 +177,6 @@ class MainActivity : AppCompatActivity() {
         isMonitoring = false
     }
 
-
-
-    // Klasa za informacije o procesu
-    data class ProcessInfo(
-        val pid: Int,
-        val userTime: Long,   // CPU vreme potrošeno u korisničkom modu
-        val systemTime: Long  // CPU vreme potrošeno u sistemskom modu
-    )
-
-    // Funkcija za dobijanje informacija o procesu
-    fun getProcessInfo(context: Context, pid: Int): ProcessInfo? {
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningAppProcesses = activityManager.runningAppProcesses
-
-        for (process in runningAppProcesses) {
-            if (process.pid == pid) {
-                // Nađi informacije o CPU vremenu
-                val processInfo = android.os.Process.getElapsedCpuTime()
-                return ProcessInfo(pid, processInfo, processInfo)
-            }
-        }
-        return null
-    }
-
-    // Funkcija za izračunavanje zauzetosti CPU-a u prethodnoj sekundi
-    fun getCpuUsageForLastSecond(context: Context, pid: Int): Double {
-        // Prvo izmerimo CPU vreme pre
-        val initialProcessInfo = getProcessInfo(context, pid) ?: return 0.0
-
-        // Sačekaj 1 sekundu
-        Thread.sleep(1000)
-
-        // Izmerimo CPU vreme posle
-        val finalProcessInfo = getProcessInfo(context, pid) ?: return 0.0
-
-        // Izračunamo razliku u CPU vremenu
-        val userTimeDiff = finalProcessInfo.userTime - initialProcessInfo.userTime
-        val systemTimeDiff = finalProcessInfo.systemTime - initialProcessInfo.systemTime
-        val totalTimeDiff = userTimeDiff + systemTimeDiff
-
-        // Ukupno vreme procesora je 1 sekunda (1000 ms)
-        val cpuUsage = (totalTimeDiff.toDouble() / 1000.0) * 100 // Izrazimo kao procenat
-
-        return cpuUsage
-    }
-
-    // Callback funkcija koja prima CPU zauzetost kao argument
-    fun calculateCpuUsage(activity: Context, pid: Int, callback: (Double) -> Unit) {
-        // Pokreni novu nit
-        thread {
-            // Izračunaj CPU zauzetost
-            val cpuUsage = getCpuUsageForLastSecond(activity, pid)
-            Log.d("CPU Usage", "CPU usage for process $pid in last second: $cpuUsage%")
-
-            // Pozovi callback sa izračunatom vrednošću
-            callback(cpuUsage)
-        }
-    }
-
-
-
-// U svom Activity-ju možeš pozvati calculateCpuUsage i proslediti PID
-// Na primer: calculateCpuUsage(this, Process.myPid()) // Da dobiješ za trenutni proces
-
-
-
     private fun getCoreNum(): Int {
         var ret = 0
         try {
@@ -244,37 +191,30 @@ class MainActivity : AppCompatActivity() {
         return ret
     }
 
-
-
-
-
-
-
     private fun getMemoryUsageForProcess(processName: String): String {
-        val pid = 9780//getPidForProcessName(processName)
+        val pid = getPidForProcessName(processName)
 
         return if (pid != -1) {
             val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val memoryInfo = ActivityManager.MemoryInfo()
             activityManager.getMemoryInfo(memoryInfo)
 
-            val totalMemory = memoryInfo.totalMem / 1024 // Ukupna memorija u KB
-            val availableMemory = memoryInfo.availMem / 1024 // Dostupna memorija u KB
-            val usedMemory = totalMemory - availableMemory // Zauzeta memorija u KB
-
-
-            // Koristimo Debug.MemoryInfo za dobijanje RSS memorije
             val debugMemoryInfo = Debug.MemoryInfo()
             Debug.getMemoryInfo(debugMemoryInfo)
-            val rssMemory = debugMemoryInfo.getTotalPss()
-                //debugMemoryInfo.getTotalPrivateDirty() // RSS u KB
+            val pssMemory = debugMemoryInfo.getTotalPss() // PSS memorija u KB
 
+            val totalMemory = memoryInfo.totalMem // Ukupna memorija u bajtovima
+            val availableMemory = memoryInfo.availMem // Dostupna memorija u bajtovima
 
-            "Zauzetost memorije za PID $pid: RSS: $rssMemory KB, Ukupna memorija: $totalMemory KB, Dostupna memorija: $availableMemory KB"
+            val totalMemoryKB = totalMemory / 1024 // Ukupna memorija u kB
+            val availableMemoryKB = availableMemory / 1024 // Dostupna memorija u kB
+
+            "Zauzetost memorije za PID $pid: PSS: $pssMemory KB, Ukupna memorija: $totalMemoryKB kB, Dostupna memorija: $availableMemoryKB kB"
         } else {
             "PID za proces $processName nije pronađen."
         }
     }
+
 
     private fun getPidForProcessName(processName: String): Int {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -287,12 +227,9 @@ class MainActivity : AppCompatActivity() {
         return -1 // Ako PID nije pronađen
     }
 
-
-    // Dodaj parametar pid za JNI funkciju
-    external fun callNativeFunction(): String
-    external fun getResourceUsage(pid: String): String
-    external fun getCpuUsageForProcessName(processName: String): String // Dodaj ovu metodu u JNI
-    external fun getTotalCpuUsage(): String // Dodaj ovu metodu u JNI
+    external fun getCpuUsageForProcessName(processName: String): String
+    external fun getTotalCpuUsage(): String
+    external fun getUsageForProcessPid(pid: Int): String
 
     companion object {
         init {

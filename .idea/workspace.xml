@@ -42,7 +42,6 @@
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/CMakeFiles/prekopiranceokod.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/CMakeFiles/prekopiranceokod.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/Debug/654h4j29/x86_64/configure_fingerprint.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/704r225r/x86/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/app/.cxx/RelWithDebInfo/704r225r/x86/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/cpp/functions.c" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/cpp/functions.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/prekopiranceokod/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/prekopiranceokod/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
@@ -55,7 +54,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\sarap\.android\avd\Pixel_8_Pro_API_31.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=Default, isTemplate=false, identifier=serial=10.10.10.150:5555;connection=204ba43e)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -147,6 +146,7 @@
     "cf.advertisement.text.has.clang-format": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/sarap/AndroidStudioProjects/prekopiranceokod/app/build/intermediates/apk/debug/app-debug.apk",

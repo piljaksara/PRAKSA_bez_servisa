@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <thread> // Dodajte ovaj header
+
+#include <cmath> // Dodaj ovu biblioteku za std::round
 #include <pthread.h>
 #include <time.h>
 #include <string.h>
@@ -716,16 +719,52 @@ int get_pid_by_process_name(const std::string& process_name) {
     return -1; // Nije pronađen PID
 }
 
-// Funkcija za simulaciju opterećenja CPU
 void* simulate_cpu_load2(void*) {
     while (cpu_load_simulated.load()) {
         // Simuliraj opterećenje CPU
         volatile double dummy = 0;
-        for (long i = 0; i < 1000000; ++i) {
+        for (long i = 0; i < 100000; ++i) { // Smanjen broj iteracija
             dummy += (i * 0.001);
         }
+        // Dodajte kratku pauzu
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Pauza od 1 ms
     }
     return nullptr;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_prekopiranceokod_MainActivity_getUsageForProcessPid(JNIEnv *env, jobject thiz, jint pid) {
+    // Proveri i pokreni simulaciju opterećenja CPU ako već nije pokrenuta
+    if (!cpu_load_simulated.load()) {
+        cpu_load_simulated.store(true); // Postavi zastavicu na true
+        pthread_t thread_id;
+        pthread_create(&thread_id, nullptr, simulate_cpu_load2, nullptr);
+    }
+
+    // Izračunaj korišćenje CPU-a i memorije
+    double cpu_usage = get_cpu_usage_for_pid(pid);
+    long memory_usage = get_memory_usage_for_pid(pid);
+
+    // Dobijanje ukupne zauzetosti CPU i dostupne memorije
+    double total_cpu_usage;
+    if (get_total_cpu_usage(&total_cpu_usage) != 0) {
+        if (total_cpu_usage < 0) total_cpu_usage = 0.00000;
+        fprintf(stderr, "Neuspešno dobijanje ukupne CPU zauzetosti.\n");
+    }
+
+    uint available_memory = get_available_memory();
+
+    // Formatiranje rezultata
+    std::string resultStr = "CPU Usage (Process " + std::to_string(pid) + "): " +
+                            std::to_string(static_cast<int>(std::round(cpu_usage))) +
+                            "%, Memory Usage: " + std::to_string(memory_usage) + " KB\n";
+
+    // Sleep for 1 second before the next measurement
+    sleep(1);
+
+    // Vraćanje rezultata kao Java string
+    return env->NewStringUTF(resultStr.c_str());
 }
 
 extern "C"
@@ -736,7 +775,7 @@ Java_com_example_prekopiranceokod_MainActivity_getCpuUsageForProcessName(JNIEnv 
     env->ReleaseStringUTFChars(processName_jstring, processNameCStr);
 
     // Dobijanje PID-a na osnovu imena procesa
-    int pid = 9780;//get_pid_by_process_name(processName);
+    int pid = get_pid_by_process_name(processName);
     if (pid == -1) {
         return env->NewStringUTF("Ne može se pronaći PID za dati proces.");
     }
@@ -749,8 +788,8 @@ Java_com_example_prekopiranceokod_MainActivity_getCpuUsageForProcessName(JNIEnv 
     }
 
     // Izračunaj korišćenje CPU-a i memorije
-    double cpu_usage = get_cpu_usage_for_pid(pid) ; // Ove funkcije treba implementirati
-    long memory_usage = get_memory_usage_for_pid(pid); // Ove funkcije treba implementirati
+    double cpu_usage = get_cpu_usage_for_pid(pid);
+    long memory_usage = get_memory_usage_for_pid(pid);
 
     // Dobijanje ukupne zauzetosti CPU i dostupne memorije
     double total_cpu_usage;
@@ -759,10 +798,11 @@ Java_com_example_prekopiranceokod_MainActivity_getCpuUsageForProcessName(JNIEnv 
         fprintf(stderr, "Neuspešno dobijanje ukupne CPU zauzetosti.\n");
     }
 
-    uint available_memory = get_available_memory(); // Ova funkcija treba da bude implementirana
+    uint available_memory = get_available_memory();
 
     // Formatiranje rezultata
-    std::string resultStr = "CPU Usage (Process " + processName + "): " + std::to_string(cpu_usage) +
+    std::string resultStr = "CPU Usage (Process " + processName + "): " +
+                            std::to_string(static_cast<int>(std::round(cpu_usage))) +
                             "%, Memory Usage: " + std::to_string(memory_usage) + " KB\n";
 
     // Sleep for 1 second before the next measurement
@@ -779,28 +819,27 @@ Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv *env, job
     std::string pidStr(pidCStr);
     env->ReleaseStringUTFChars(pid_jstring, pidCStr);
 
-
     pthread_t thread_id;
     pthread_create(&thread_id, NULL, simulate_cpu_load2, NULL);
 
-
     int pid = std::stoi(pidStr);
-    double cpu_usage = get_cpu_usage_for_pid(pid)/4;
+    double cpu_usage = get_cpu_usage_for_pid(pid) / 4;
     long memory_usage = get_memory_usage_for_pid(pid);
 
     // Dobijanje ukupne zauzetosti CPU i dostupne memorije
     double total_cpu_usage;
     if (get_total_cpu_usage(&total_cpu_usage) != 0) {
-        if(total_cpu_usage<0)total_cpu_usage=0.00000;
+        if (total_cpu_usage < 0) total_cpu_usage = 0.00000;
         fprintf(stderr, "Neuspešno dobijanje ukupne CPU zauzetosti.\n");
     }
 
     uint available_memory = get_available_memory();
 
     // Formatiranje rezultata
-    std::string resultStr = "CPU Usage (PID " + std::to_string(pid) + "): " + std::to_string(cpu_usage) +
+    std::string resultStr = "CPU Usage (PID " + std::to_string(pid) + "): " +
+                            std::to_string(static_cast<int>(std::round(cpu_usage))) +
                             "%, Memory Usage: " + std::to_string(memory_usage) + " KB\n" +
-                            "Total CPU Usage: " + std::to_string(total_cpu_usage) +
+                            "Total CPU Usage: " + std::to_string(static_cast<int>(std::round(total_cpu_usage))) +
                             "%, Available Memory: " + std::to_string(available_memory) + " kB\n";
 
     // Sleep for 1 second before the next measurement
@@ -810,15 +849,9 @@ Java_com_example_prekopiranceokod_MainActivity_getResourceUsage(JNIEnv *env, job
     return env->NewStringUTF(resultStr.c_str());
 }
 
-
-
-
-
-
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_prekopiranceokod_MainActivity_getTotalCpuUsage(JNIEnv *env, jobject thiz) {
-
     // Check and start the CPU load simulation if not already running
     if (!cpu_load_simulated.load()) {
         cpu_load_simulated.store(true); // Set the flag to true
@@ -837,7 +870,7 @@ Java_com_example_prekopiranceokod_MainActivity_getTotalCpuUsage(JNIEnv *env, job
 
     // Formatiranje rezultata
     std::string resultStr =
-            "Total CPU Usage: " + std::to_string(total_cpu_usage) +
+            "Total CPU Usage: " + std::to_string(static_cast<int>(std::round(total_cpu_usage))) +
             "%, Available Memory: " + std::to_string(available_memory) + " kB\n";
 
     // Sleep for 1 second before the next measurement
@@ -846,4 +879,3 @@ Java_com_example_prekopiranceokod_MainActivity_getTotalCpuUsage(JNIEnv *env, job
     // Vraćanje rezultata kao Java string
     return env->NewStringUTF(resultStr.c_str());
 }
-
