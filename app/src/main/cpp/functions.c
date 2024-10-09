@@ -592,17 +592,9 @@ long get_memory_usage_for_pid(pid_t pid) {
 double measure_time_elapsed2(struct timespec *last_check_time) {
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
-
-    // Izračunaj razliku u sekundama između prethodnog i trenutnog vremena
-    double elapsed_sec = now.tv_sec - last_check_time->tv_sec;
-    double elapsed_nsec = (now.tv_nsec - last_check_time->tv_nsec) / 1e9;  // Prebaci nanosekunde u sekunde
-    double elapsed = elapsed_sec + elapsed_nsec;
-
-    // Ažuriraj poslednje vreme
-    *last_check_time = now;
-
-    // Vraćamo proteklo vreme samo ako je veće od 0, inače vraćamo 0.
-    return (elapsed > 0) ? elapsed : 0.0;
+    double elapsed = (now.tv_sec - last_check_time->tv_sec) +
+                     (now.tv_nsec - last_check_time->tv_nsec) / 1e9;
+    return elapsed;
 }
 
 int get_total_cpu_usage(double *cpu_usage) {
@@ -615,30 +607,22 @@ int get_total_cpu_usage(double *cpu_usage) {
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
 
-    // Izračunaj vreme proteklo od poslednjeg merenja
     double elapsed = measure_time_elapsed2(&last_check_time);
     if (elapsed < 1.0) {
-        return -1; // Ako je prošlo manje od 1 sekunde, vrati prethodnu vrednost
+        return -1;
     }
 
-    // Otvori /proc/stat
     FILE *fp = fopen("/proc/stat", "r");
     if (!fp) {
-        __android_log_print(ANDROID_LOG_ERROR, "MyTag", "null kod fp %s", strerror(errno));
         perror("Error opening /proc/stat");
-
         return -1;
     }
 
     unsigned long long user, nice, system, idle;
-    // Pročitaj prvi red iz /proc/stat
     fscanf(fp, "cpu %llu %llu %llu %llu", &user, &nice, &system, &idle);
     fclose(fp);
 
-    // Izračunaj ukupno vreme
     unsigned long long total_time = user + nice + system + idle;
-
-    // Izračunaj razlike
     unsigned long long diff_user = user - prev_user;
     unsigned long long diff_nice = nice - prev_nice;
     unsigned long long diff_system = system - prev_system;
@@ -646,21 +630,19 @@ int get_total_cpu_usage(double *cpu_usage) {
     unsigned long long diff_total = diff_user + diff_nice + diff_system + diff_idle;
 
     if (diff_total == 0) {
-        *cpu_usage = 0; // Ako nema promene, CPU opterećenje je 0%
+        *cpu_usage = 0;
         return 0;
     }
 
-    // Izračunaj CPU opterećenje
     double cpu_usage_percentage = 100.0 * (diff_total - diff_idle) / diff_total;
 
-    // Sačuvaj trenutne vrednosti za sledeće merenje
     prev_user = user;
     prev_nice = nice;
     prev_system = system;
     prev_idle = idle;
 
-    *cpu_usage = cpu_usage_percentage; // Postavi vrednost u pokazivač
-    return 0; // Uspešno završeno
+    *cpu_usage = cpu_usage_percentage;
+    return 0;
 }
 
 
